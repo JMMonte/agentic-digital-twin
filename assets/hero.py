@@ -140,16 +140,16 @@ def aircraft_cp(points: np.ndarray) -> np.ndarray:
 def make_fuselage():
     points: list[list[float]] = []
     faces: list[int] = []
-    xs = np.linspace(-3.05, 3.12, 88)
-    theta = np.linspace(0, 2 * np.pi, 48, endpoint=False)
+    xs = np.linspace(-3.20, 3.28, 96)
+    theta = np.linspace(0, 2 * np.pi, 56, endpoint=False)
 
     for x in xs:
         s = (x - xs[0]) / (xs[-1] - xs[0])
-        taper = np.sin(np.pi * s) ** 0.43
-        taper *= 0.76 + 0.24 * np.cos(np.pi * (s - 0.42))
+        taper = np.sin(np.pi * s) ** 0.47
+        taper *= 0.72 + 0.28 * np.cos(np.pi * (s - 0.42))
         taper = max(float(taper), 0.045)
-        ry = 0.39 * taper * (1.0 + 0.08 * np.exp(-((s - 0.54) / 0.24) ** 2))
-        rz = 0.46 * taper
+        ry = 0.34 * taper * (1.0 + 0.08 * np.exp(-((s - 0.54) / 0.24) ** 2))
+        rz = 0.42 * taper
         for t in theta:
             points.append([float(x), float(ry * np.cos(t)), float(rz * np.sin(t))])
 
@@ -179,12 +179,12 @@ def make_swept_wing(
     side: float,
     root_y: float = 0.30,
     tip_y: float = 2.58,
-    root_lead: float = 0.88,
-    root_trail: float = -1.14,
-    tip_lead: float = -0.38,
-    tip_trail: float = -2.18,
+    root_lead: float = 0.96,
+    root_trail: float = -1.18,
+    tip_lead: float = -0.56,
+    tip_trail: float = -2.34,
     z_root: float = -0.01,
-    dihedral: float = 0.18,
+    dihedral: float = 0.24,
     thickness: float = 0.055,
     nspan: int = 38,
     nchord: int = 18,
@@ -242,10 +242,10 @@ def make_vertical_tail():
     yvals = (-0.045, 0.045)
     profile = np.array(
         [
-            [-2.42, 0.24],
-            [-1.55, 0.25],
-            [-1.83, 1.25],
-            [-2.34, 0.86],
+            [-2.58, 0.24],
+            [-1.50, 0.25],
+            [-1.86, 1.36],
+            [-2.48, 0.94],
         ],
         dtype=float,
     )
@@ -261,13 +261,47 @@ def make_vertical_tail():
     return mesh
 
 
+def mesh_with_scalar(mesh, scalar_name: str, scalar_func):
+    mesh = mesh.clean().compute_normals(
+        point_normals=True,
+        cell_normals=True,
+        consistent_normals=True,
+        auto_orient_normals=True,
+    )
+    mesh.point_data[scalar_name] = scalar_func(mesh.points)
+    return mesh
+
+
+def make_scaled_sphere(center, radii, theta_resolution=48, phi_resolution=24):
+    import pyvista as pv
+
+    center = np.asarray(center, dtype=float)
+    radii = np.asarray(radii, dtype=float)
+    mesh = pv.Sphere(radius=1.0, center=tuple(center), theta_resolution=theta_resolution, phi_resolution=phi_resolution)
+    points = center + (mesh.points - center) * radii
+    mesh.points = points
+    return mesh.clean().compute_normals(
+        point_normals=True,
+        cell_normals=True,
+        consistent_normals=True,
+        auto_orient_normals=True,
+    )
+
+
+def make_aircraft_nacelle(side: float):
+    import pyvista as pv
+
+    mesh = pv.Cylinder(center=(0.00, side * 1.06, -0.20), direction=(1, 0, 0), radius=0.155, height=0.76, resolution=56)
+    return mesh_with_scalar(mesh, "Cp", aircraft_cp)
+
+
 def box_scalar_aero(points: np.ndarray) -> np.ndarray:
     x, y, z = points[:, 0], points[:, 1], points[:, 2]
-    stagnation = 1.2 * np.exp(-((x - 2.52) / 0.42) ** 2 - ((z - 0.52) / 0.55) ** 2)
-    roof = 0.55 * np.exp(-((z - 1.08) / 0.22) ** 2 - ((x - 1.28) / 0.9) ** 2)
-    wake = -0.55 * np.exp(-((x + 1.55) / 0.92) ** 2 - (z / 0.9) ** 2)
-    flank = 0.22 * np.cos(2.7 * y) + 0.16 * z
-    return np.clip(stagnation + roof + wake + flank, -0.55, 1.45)
+    stagnation = 0.86 * np.exp(-((x - 2.52) / 0.46) ** 2 - ((z - 0.52) / 0.58) ** 2)
+    roof = 0.40 * np.exp(-((z - 1.08) / 0.24) ** 2 - ((x - 1.28) / 0.9) ** 2)
+    wake = -0.45 * np.exp(-((x + 1.55) / 0.92) ** 2 - (z / 0.9) ** 2)
+    flank = 0.16 * np.cos(2.7 * y) + 0.12 * z
+    return np.clip(stagnation + roof + wake + flank, -0.50, 1.18)
 
 
 def box_scalar_stress(points: np.ndarray) -> np.ndarray:
@@ -318,14 +352,83 @@ def make_subdivided_box(center, size, scalar_func, scalar_name: str, density=(10
     return mesh
 
 
+def rotation_matrix(axis: str, angle_deg: float) -> np.ndarray:
+    angle = np.deg2rad(angle_deg)
+    c = float(np.cos(angle))
+    s = float(np.sin(angle))
+    if axis == "x":
+        return np.array([[1, 0, 0], [0, c, -s], [0, s, c]], dtype=float)
+    if axis == "y":
+        return np.array([[c, 0, s], [0, 1, 0], [-s, 0, c]], dtype=float)
+    return np.array([[c, -s, 0], [s, c, 0], [0, 0, 1]], dtype=float)
+
+
+def rotate_points(points: np.ndarray, angle_deg: float, axis: str = "z", origin=(0, 0, 0)) -> np.ndarray:
+    origin = np.asarray(origin, dtype=float)
+    matrix = rotation_matrix(axis, angle_deg)
+    return (np.asarray(points, dtype=float) - origin) @ matrix.T + origin
+
+
+def rotate_mesh(mesh, angle_deg: float, axis: str = "z", origin=(0, 0, 0)):
+    out = mesh.copy(deep=True)
+    out.points = rotate_points(out.points, angle_deg, axis=axis, origin=origin)
+    return out.compute_normals(
+        point_normals=True,
+        cell_normals=True,
+        consistent_normals=True,
+        auto_orient_normals=True,
+    )
+
+
+def make_rotated_box(center, size, angle_deg: float, scalar_func, scalar_name: str, density=(10, 10, 10), axis="z"):
+    mesh = make_subdivided_box(center, size, scalar_func, scalar_name, density=density)
+    return rotate_mesh(mesh, angle_deg, axis=axis, origin=center)
+
+
+def rotated_point(point, angle_deg: float, axis: str = "z", origin=(0, 0, 0)) -> tuple[float, float, float]:
+    point = np.asarray(point, dtype=float)[None, :]
+    return tuple(float(v) for v in rotate_points(point, angle_deg, axis=axis, origin=origin)[0])
+
+
+def make_quad_mesh(points):
+    return polydata_from_faces(points, [4, 0, 1, 2, 3])
+
+
+def make_parabolic_dish(center=(0.28, -0.74, 0.52), radius=0.23, depth=0.11):
+    points: list[list[float]] = []
+    faces: list[int] = []
+    rings = 8
+    segs = 48
+    cx, cy, cz = center
+
+    points.append([float(cx), float(cy), float(cz)])
+    for ring in range(1, rings + 1):
+        r = radius * ring / rings
+        y = cy - depth * (r / radius) ** 2
+        for theta in np.linspace(0, 2 * np.pi, segs, endpoint=False):
+            points.append([float(cx + r * np.cos(theta)), float(y), float(cz + r * np.sin(theta))])
+
+    for seg in range(segs):
+        faces.extend([3, 0, 1 + seg, 1 + (seg + 1) % segs])
+    for ring in range(1, rings):
+        start = 1 + (ring - 1) * segs
+        next_start = 1 + ring * segs
+        for seg in range(segs):
+            faces.extend([4, start + seg, start + (seg + 1) % segs, next_start + (seg + 1) % segs, next_start + seg])
+
+    return polydata_from_faces(points, faces)
+
+
 def make_truck_cab():
     side = np.array(
         [
-            [1.08, 0.00],
-            [2.52, 0.00],
-            [2.52, 0.62],
-            [2.10, 1.04],
-            [1.08, 1.04],
+            [0.92, 0.15],
+            [2.52, 0.15],
+            [2.52, 0.60],
+            [2.04, 0.73],
+            [1.86, 1.13],
+            [1.14, 1.20],
+            [0.92, 0.90],
         ],
         dtype=float,
     )
@@ -335,8 +438,8 @@ def make_truck_cab():
     for y in ys:
         for x, z in side:
             points.append([float(x), float(y), float(z)])
-    faces.extend([5, 0, 1, 2, 3, 4])
-    faces.extend([5, 5, 9, 8, 7, 6])
+    faces.extend([len(side), *range(len(side))])
+    faces.extend([len(side), *range(2 * len(side) - 1, len(side) - 1, -1)])
     for i in range(len(side)):
         faces.extend([4, i, (i + 1) % len(side), len(side) + (i + 1) % len(side), len(side) + i])
     mesh = polydata_from_faces(points, faces)
@@ -405,8 +508,10 @@ def render_aircraft_pyvista(size=(670, 500)) -> Image.Image:
         make_fuselage(),
         make_swept_wing(1),
         make_swept_wing(-1),
-        make_swept_wing(1, root_y=0.18, tip_y=1.18, root_lead=-1.82, root_trail=-2.54, tip_lead=-2.15, tip_trail=-2.90, z_root=0.16, dihedral=0.06, thickness=0.04, nspan=22, nchord=12),
-        make_swept_wing(-1, root_y=0.18, tip_y=1.18, root_lead=-1.82, root_trail=-2.54, tip_lead=-2.15, tip_trail=-2.90, z_root=0.16, dihedral=0.06, thickness=0.04, nspan=22, nchord=12),
+        make_aircraft_nacelle(1),
+        make_aircraft_nacelle(-1),
+        make_swept_wing(1, root_y=0.16, tip_y=1.10, root_lead=-1.88, root_trail=-2.52, tip_lead=-2.22, tip_trail=-3.00, z_root=0.26, dihedral=0.07, thickness=0.04, nspan=22, nchord=12),
+        make_swept_wing(-1, root_y=0.16, tip_y=1.10, root_lead=-1.88, root_trail=-2.52, tip_lead=-2.22, tip_trail=-3.00, z_root=0.26, dihedral=0.07, thickness=0.04, nspan=22, nchord=12),
         make_vertical_tail(),
     ]
 
@@ -425,6 +530,14 @@ def render_aircraft_pyvista(size=(670, 500)) -> Image.Image:
             scalar_bar_args=scalar_bar_args("Cp", pos=(0.86, 0.21), height=0.50) if idx == 0 else None,
         )
 
+    canopy = make_scaled_sphere((1.24, 0.0, 0.38), (0.38, 0.15, 0.12), theta_resolution=48, phi_resolution=20)
+    plotter.add_mesh(canopy, color="#132033", opacity=0.66, smooth_shading=True, ambient=0.34, diffuse=0.36, specular=0.58, specular_power=42)
+    for side in (-1, 1):
+        rim = pv.Cylinder(center=(0.39, side * 1.06, -0.20), direction=(1, 0, 0), radius=0.118, height=0.030, resolution=48)
+        fan = pv.Cylinder(center=(0.408, side * 1.06, -0.20), direction=(1, 0, 0), radius=0.060, height=0.034, resolution=36)
+        plotter.add_mesh(rim, color="#d7e0ea", opacity=0.58, ambient=0.22, diffuse=0.52, specular=0.40, specular_power=28)
+        plotter.add_mesh(fan, color="#0b1118", ambient=0.30, diffuse=0.36, specular=0.18, specular_power=20)
+
     for zoff, alpha, width in ((0.58, 0.30, 1.2), (0.14, 0.20, 0.8), (-0.30, 0.16, 0.7)):
         for y0 in np.linspace(-2.65, 2.65, 5):
             pts = np.column_stack(
@@ -437,7 +550,7 @@ def render_aircraft_pyvista(size=(670, 500)) -> Image.Image:
             plotter.add_mesh(pv.Spline(pts, 130), color="#c9d1d9", opacity=alpha, line_width=width)
 
     plotter.camera_position = [(5.7, -5.9, 3.25), (0.02, 0.0, 0.07), (0, 0, 1)]
-    plotter.camera.zoom(1.08)
+    plotter.camera.zoom(1.04)
     return screenshot_plotter(plotter)
 
 
@@ -445,11 +558,17 @@ def render_satellite_pyvista(size=(650, 500)) -> Image.Image:
     plotter, pv = setup_pyvista(size)
     add_soft_lighting(plotter, pv, key=(3.2, -4.7, 4.2), fill=(-3.6, 3.2, 2.6))
 
-    parts = [
-        make_subdivided_box((0, 0, 0), (1.05, 0.84, 0.76), box_scalar_stress, "vm", density=(17, 13, 13)),
-        make_subdivided_box((-1.82, 0, 0), (2.34, 0.055, 0.82), box_scalar_stress, "vm", density=(32, 3, 12)),
-        make_subdivided_box((1.82, 0, 0), (2.34, 0.055, 0.82), box_scalar_stress, "vm", density=(32, 3, 12)),
+    panel_specs = [
+        ((-1.16, -0.02, 0.0), (1.05, 0.055, 0.82), -2.5),
+        ((-2.30, 0.12, 0.0), (1.12, 0.055, 0.82), -12.0),
+        ((1.16, -0.02, 0.0), (1.05, 0.055, 0.82), 2.5),
+        ((2.30, -0.12, 0.0), (1.12, 0.055, 0.82), 12.0),
     ]
+    parts = [make_subdivided_box((0, 0, 0), (1.05, 0.84, 0.76), box_scalar_stress, "vm", density=(17, 13, 13))]
+    parts.extend(
+        make_rotated_box(center, size, angle, box_scalar_stress, "vm", density=(18, 3, 12))
+        for center, size, angle in panel_specs
+    )
     for idx, mesh in enumerate(parts):
         plotter.add_mesh(
             mesh,
@@ -468,24 +587,45 @@ def render_satellite_pyvista(size=(650, 500)) -> Image.Image:
             scalar_bar_args=scalar_bar_args("MPa", pos=(0.855, 0.20), height=0.53) if idx == 0 else None,
         )
 
-    # Panel circuit/grid traces, slightly lifted toward the camera.
-    for x0, x1 in ((-2.99, -0.65), (0.65, 2.99)):
-        for x in np.linspace(x0 + 0.22, x1 - 0.22, 7):
-            plotter.add_mesh(pv.Line((x, -0.052, -0.41), (x, -0.052, 0.41)), color="#e6edf3", opacity=0.34, line_width=0.65)
-        for z in np.linspace(-0.28, 0.28, 3):
-            plotter.add_mesh(pv.Line((x0 + 0.05, -0.054, z), (x1 - 0.05, -0.054, z)), color="#e6edf3", opacity=0.24, line_width=0.55)
+    # Panel cell traces, lifted slightly toward the camera to avoid z fighting.
+    for center, size, angle in panel_specs:
+        cx, cy, cz = center
+        sx, sy, sz = size
+        front_y = cy - sy / 2 - 0.006
+        x0 = cx - sx / 2 + 0.06
+        x1 = cx + sx / 2 - 0.06
+        z0 = cz - sz / 2 + 0.05
+        z1 = cz + sz / 2 - 0.05
+        for x in np.linspace(x0 + 0.12, x1 - 0.12, 4):
+            p0 = rotated_point((x, front_y, z0), angle, origin=center)
+            p1 = rotated_point((x, front_y, z1), angle, origin=center)
+            plotter.add_mesh(pv.Line(p0, p1), color="#e6edf3", opacity=0.34, line_width=0.62)
+        for z in np.linspace(z0 + 0.12, z1 - 0.12, 3):
+            p0 = rotated_point((x0, front_y, z), angle, origin=center)
+            p1 = rotated_point((x1, front_y, z), angle, origin=center)
+            plotter.add_mesh(pv.Line(p0, p1), color="#e6edf3", opacity=0.25, line_width=0.56)
 
-    for x in (-0.72, 0.72):
-        rod = pv.Cylinder(center=(x, 0, 0), direction=(1, 0, 0), radius=0.035, height=0.28, resolution=28)
-        plotter.add_mesh(rod, color="#c9d1d9", ambient=0.12, diffuse=0.65, specular=0.45, specular_power=35)
+    for x in (-0.64, 0.64, -1.74, 1.74):
+        hinge = pv.Cylinder(center=(x, 0, 0), direction=(0, 0, 1), radius=0.026, height=0.95, resolution=28)
+        plotter.add_mesh(hinge, color="#c9d1d9", ambient=0.14, diffuse=0.62, specular=0.45, specular_power=35)
 
-    boom_a = pv.Cylinder(center=(0.16, 0.08, 0.80), direction=(0.48, 0.22, 0.78), radius=0.018, height=1.15, resolution=18)
-    boom_b = pv.Cylinder(center=(-0.18, -0.05, -0.78), direction=(-0.50, -0.20, -0.75), radius=0.018, height=1.05, resolution=18)
-    plotter.add_mesh(boom_a, color="#c9d1d9", opacity=0.86, specular=0.38, specular_power=28)
-    plotter.add_mesh(boom_b, color="#c9d1d9", opacity=0.76, specular=0.32, specular_power=24)
+    dish_boom = pv.Cylinder(center=(0.25, -0.58, 0.52), direction=(0, -1, 0.08), radius=0.016, height=0.42, resolution=18)
+    dish = make_parabolic_dish(center=(0.27, -0.81, 0.54), radius=0.23, depth=0.10)
+    plotter.add_mesh(dish_boom, color="#c9d1d9", opacity=0.88, specular=0.42, specular_power=30)
+    plotter.add_mesh(dish, color="#dbe7ff", opacity=0.78, smooth_shading=True, ambient=0.18, diffuse=0.58, specular=0.52, specular_power=36)
+
+    aft_boom = pv.Cylinder(center=(-0.22, 0.18, -0.80), direction=(-0.45, 0.18, -0.78), radius=0.016, height=1.05, resolution=18)
+    plotter.add_mesh(aft_boom, color="#c9d1d9", opacity=0.72, specular=0.30, specular_power=24)
+
+    for tx in (-0.34, 0.34):
+        for tz in (-0.26, 0.26):
+            thruster = pv.Cone(center=(tx, 0.52, tz), direction=(0, 1, 0), height=0.20, radius=0.060, resolution=28)
+            throat = pv.Cylinder(center=(tx, 0.615, tz), direction=(0, 1, 0), radius=0.030, height=0.020, resolution=24)
+            plotter.add_mesh(thruster, color="#a7b6c7", ambient=0.18, diffuse=0.56, specular=0.44, specular_power=30)
+            plotter.add_mesh(throat, color="#0b1118", ambient=0.32, diffuse=0.34, specular=0.16, specular_power=16)
 
     plotter.camera_position = [(4.1, -4.9, 2.9), (0, 0, 0.02), (0, 0, 1)]
-    plotter.camera.zoom(1.08)
+    plotter.camera.zoom(1.03)
     return screenshot_plotter(plotter)
 
 
@@ -494,9 +634,11 @@ def render_truck_pyvista(size=(620, 440)) -> Image.Image:
     add_soft_lighting(plotter, pv, key=(4.8, -5.2, 4.3), fill=(-3.4, 2.4, 2.3))
 
     body_parts = [
-        make_subdivided_box((-0.55, 0, 0.64), (3.05, 0.92, 1.05), box_scalar_aero, "q", density=(34, 11, 14)),
+        make_subdivided_box((-0.86, 0, 0.74), (3.08, 0.92, 1.12), box_scalar_aero, "q", density=(36, 11, 15)),
         make_truck_cab(),
-        make_subdivided_box((2.05, 0, 0.38), (0.96, 0.88, 0.64), box_scalar_aero, "q", density=(14, 10, 10)),
+        make_subdivided_box((0.90, 0, 0.28), (1.42, 0.74, 0.22), box_scalar_aero, "q", density=(16, 7, 5)),
+        make_subdivided_box((0.58, 0, 0.48), (0.34, 0.62, 0.10), box_scalar_aero, "q", density=(8, 6, 4)),
+        make_subdivided_box((2.56, 0, 0.30), (0.14, 0.86, 0.28), box_scalar_aero, "q", density=(4, 8, 6)),
     ]
     for idx, mesh in enumerate(body_parts):
         plotter.add_mesh(
@@ -513,28 +655,60 @@ def render_truck_pyvista(size=(620, 440)) -> Image.Image:
             scalar_bar_args=scalar_bar_args("q", pos=(0.865, 0.23), height=0.47) if idx == 0 else None,
         )
 
-    for x in (-1.52, -0.18, 1.68):
+    glass_parts = [
+        make_quad_mesh([(1.17, -0.512, 0.77), (1.82, -0.512, 0.77), (1.72, -0.512, 1.06), (1.16, -0.512, 1.10)]),
+        make_quad_mesh([(2.515, -0.34, 0.65), (2.515, 0.34, 0.65), (2.12, 0.30, 0.97), (2.12, -0.30, 0.97)]),
+        make_quad_mesh([(2.535, -0.36, 0.25), (2.535, 0.36, 0.25), (2.535, 0.36, 0.51), (2.535, -0.36, 0.51)]),
+    ]
+    for idx, mesh in enumerate(glass_parts):
+        color = "#0b1624" if idx < 2 else "#121820"
+        opacity = 0.76 if idx < 2 else 0.64
+        plotter.add_mesh(mesh, color=color, opacity=opacity, smooth_shading=True, ambient=0.34, diffuse=0.34, specular=0.56, specular_power=36)
+
+    for side in (-1, 1):
+        stack = pv.Cylinder(center=(1.03, side * 0.50, 0.98), direction=(0, 0, 1), radius=0.033, height=0.86, resolution=28)
+        cap = pv.Cylinder(center=(1.08, side * 0.50, 1.41), direction=(1, 0, 0), radius=0.026, height=0.14, resolution=18)
+        plotter.add_mesh(stack, color="#b8c7d7", ambient=0.16, diffuse=0.58, specular=0.50, specular_power=34)
+        plotter.add_mesh(cap, color="#b8c7d7", ambient=0.16, diffuse=0.58, specular=0.50, specular_power=34)
+
+    fifth_wheel = pv.Cylinder(center=(0.58, 0, 0.54), direction=(0, 0, 1), radius=0.22, height=0.035, resolution=42)
+    plotter.add_mesh(fifth_wheel, color="#111820", opacity=0.86, ambient=0.28, diffuse=0.42, specular=0.24, specular_power=18)
+
+    for x in (-1.78, -1.42, 0.56, 0.92, 2.12):
+        axle = pv.Cylinder(center=(x, 0, 0.10), direction=(0, 1, 0), radius=0.038, height=1.20, resolution=20)
+        plotter.add_mesh(axle, color="#6e7f91", ambient=0.18, diffuse=0.46, specular=0.38, specular_power=26)
         for y in (-0.56, 0.56):
-            tire = pv.Cylinder(center=(x, y, 0.08), direction=(0, 1, 0), radius=0.255, height=0.15, resolution=56)
-            hub = pv.Cylinder(center=(x, y * 1.01, 0.08), direction=(0, 1, 0), radius=0.105, height=0.165, resolution=38)
+            tire = pv.Cylinder(center=(x, y, 0.10), direction=(0, 1, 0), radius=0.245, height=0.15, resolution=56)
+            hub = pv.Cylinder(center=(x, y * 1.01, 0.10), direction=(0, 1, 0), radius=0.096, height=0.168, resolution=38)
             plotter.add_mesh(tire, color="#121820", ambient=0.16, diffuse=0.58, specular=0.22, specular_power=18)
             plotter.add_mesh(hub, color="#9fb3c8", ambient=0.18, diffuse=0.62, specular=0.48, specular_power=32)
 
-    ground = pv.Plane(center=(0.28, 0, -0.185), direction=(0, 0, 1), i_size=4.8, j_size=1.9, i_resolution=2, j_resolution=2)
+    detail_lines = [
+        ((-2.35, -0.468, 1.26), (0.60, -0.468, 1.26)),
+        ((-2.35, -0.468, 0.22), (0.60, -0.468, 0.22)),
+        ((0.60, -0.468, 0.22), (0.60, -0.468, 1.26)),
+        ((-1.22, -0.472, 0.23), (-1.22, -0.472, 1.23)),
+        ((1.02, -0.514, 0.20), (1.02, -0.514, 0.92)),
+        ((1.93, -0.514, 0.66), (1.93, -0.514, 1.02)),
+    ]
+    for p0, p1 in detail_lines:
+        plotter.add_mesh(pv.Line(p0, p1), color="#dbe7ff", opacity=0.22, line_width=0.72)
+
+    ground = pv.Plane(center=(0.06, 0, -0.185), direction=(0, 0, 1), i_size=5.4, j_size=1.9, i_resolution=2, j_resolution=2)
     plotter.add_mesh(ground, color="#17202a", opacity=0.34, ambient=0.42, diffuse=0.42)
 
     for y in np.linspace(-0.78, 0.78, 4):
         pts = np.column_stack(
             [
-                np.linspace(2.88, -2.28, 120),
+                np.linspace(2.82, -2.58, 120),
                 y + 0.04 * np.sin(np.linspace(0, 2.1 * np.pi, 120)),
                 0.88 + 0.10 * np.sin(np.linspace(0, 1.7 * np.pi, 120) + y),
             ]
         )
         plotter.add_mesh(pv.Spline(pts, 120), color="#c9d1d9", opacity=0.18, line_width=0.75)
 
-    plotter.camera_position = [(4.7, -4.7, 2.6), (0.25, 0, 0.48), (0, 0, 1)]
-    plotter.camera.zoom(1.18)
+    plotter.camera_position = [(4.8, -4.8, 2.65), (0.08, 0, 0.52), (0, 0, 1)]
+    plotter.camera.zoom(1.08)
     return screenshot_plotter(plotter)
 
 
@@ -712,16 +886,11 @@ def render_charts(size=(510, 136)) -> Image.Image:
 
 
 def draw_text_layer(image: Image.Image, renderer: str) -> None:
+    _ = renderer
     draw = ImageDraw.Draw(image, "RGBA")
-    title_font = load_font(44, "bold")
-    subtitle_font = load_font(15, "regular")
     label_font = load_font(13, "regular")
     small_font = load_font(11, "regular")
     wordmark_font = load_font(15, "regular")
-
-    draw.text((92, 72), "Agentic Digital Twins, as Code", fill=hex_to_rgba(INK, 242), font=title_font)
-    draw.text((94, 124), "claude code plugin", fill=hex_to_rgba(MUTED, 206), font=subtitle_font)
-    draw.line((94, 154, 315, 154), fill=hex_to_rgba(ACCENT, 120), width=1)
 
     labels = [
         ((116, 558), "cfd", "surface pressure"),
