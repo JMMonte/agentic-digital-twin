@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "sim-hardware-as-code",
+  "displayName": "Simulation-in-the-Loop, Hardware-as-Code",
+  "version": "0.2.0",
+  "description": "Packages the simulation-in-the-loop, hardware-as-code engineering methodology: one source-of-truth design.json mirrored into the build, every requirement gets an executable scored audit (PASS/WARN/FAIL), uv PEP723 scripts, rerun visualization, the assembly verification ladder, scored tradeoff studies with sensitivity, a tiered FEA stack (analytic -> in-house beam FEA -> gmsh + CalculiX continuum) validated anchor-to-anchor, and the automation-agent manufacturability loop. Ships scaffolders, an audit/tradeoff/FEA/packaging skill set, a methodology subagent, and a living guardrails checklist.",
+  "author": {
+    "name": "Joao Montenegro",
+    "email": "joaommontenegro1@gmail.com"
+  },
+  "keywords": [
+    "engineering",
+    "simulation",
+    "hardware",
+    "design-of-record",
+    "audit",
+    "rerun",
+    "picogk",
+    "cad",
+    "tradeoff-study",
+    "manufacturability",
+    "fea",
+    "calculix",
+    "gmsh"
+  ],
+  "license": "MIT"
+}

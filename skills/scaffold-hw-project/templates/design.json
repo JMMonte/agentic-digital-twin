@@ -1,0 +1,56 @@
+{
+  "project": "REPLACE_ME",
+  "version": "0.1",
+  "date": "YYYY-MM-DD",
+  "status": "rev0: scaffolded from sim-hardware-as-code; geometry not yet filled in",
+
+  "_README": [
+    "SINGLE SOURCE OF TRUTH. The build source (Design.cs / design_mirror.py)",
+    "MIRRORS this file: update JSON FIRST, then the mirror, never one alone.",
+    "Tag every PUBLISHED or MEASURED value with [PUB] in its sibling *_note.",
+    "Every other number is DERIVED and must trace to an anchor or sizing script.",
+    "Audits READ this file; they never re-declare these constants."
+  ],
+
+  "anchors_published": {
+    "_note": "[PUB] verbatim from the spec/datasheet/measurement. Cite the source.",
+    "source": "REPLACE_ME (url / datasheet / measurement, date)",
+    "example_anchor_mm": 1000,
+    "example_anchor_kg": 10.0
+  },
+
+  "derivation_note": "Numbers NOT in anchors_published are DERIVED. State here HOW (sizing script, scaled drawing, analytic closure). Keep them traceable; never present them as published.",
+
+  "coordinate_system": {
+    "units": "mm, kg, N",
+    "x": "REPLACE_ME (e.g. aft, 0 at bow)",
+    "y": "REPLACE_ME (e.g. right/starboard)",
+    "z": "REPLACE_ME (e.g. up, 0 at baseline)",
+    "voxel_mm": 2.0
+  },
+
+  "geometry": {
+    "_note": "DERIVED unless tagged. Fill in the real parametric geometry.",
+    "primary_body": {
+      "length_mm": 1000,
+      "width_mm": 200,
+      "height_mm": 150,
+      "min_wall_mm": 4,
+      "skin_visual_mm": 6,
+      "skin_real_mm": 1.5
+    }
+  },
+
+  "masses_kg": {
+    "_note": "Mass + station (x,y,z mm) per item -> CG and inertia close in audit.py",
+    "structure": { "mass": 5.0, "station_mm": [500, 0, 75] },
+    "payload":   { "mass": 5.0, "station_mm": [500, 0, 80] },
+    "mtow": 10.0
+  },
+
+  "requirements": {
+    "_note": "Each becomes a scored check in audit.py. lower_is_better flips the score direction.",
+    "example_clearance_min_mm": { "min": 2.0, "lower_is_better": false },
+    "example_mass_max_kg":      { "max": 10.0, "lower_is_better": true }
+  }
+}

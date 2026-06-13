@@ -1,0 +1,52 @@
+{
+  "_README": [
+    "AGENT LAYER of the manufacturability blend. An agent (with engineering",
+    "judgment) AUTHORS this: how the design decomposes into FABRICATED parts",
+    "vs COTS, the cable/fluid harness, the joints, and each item's PLACEMENT",
+    "(position + envelope). AUTOMATION (mfg/packaging_solve.py) always",
+    "VALIDATES it and never silently overrides it. Loop: agent edits this ->",
+    "solver scores -> agent fixes the flagged items -> repeat until it packs.",
+    "GUARDRAIL: a wrong placement still parses as valid JSON. The solver is",
+    "what proves it actually fits."
+  ],
+
+  "fabricated": [
+    {
+      "name": "primary_structure",
+      "process": "REPLACE_ME (CNC / 3D-print / layup / weldment)",
+      "material": "REPLACE_ME",
+      "est_mass_kg": 5.0
+    }
+  ],
+
+  "cots": [
+    {
+      "name": "example_battery_pack",
+      "vendor_pn": "REPLACE_ME",
+      "mass_kg": 2.0,
+      "pos_mm": [400, 0, 60],
+      "envelope_mm": [200, 120, 80],
+      "source_note": "datasheet url / lead time"
+    },
+    {
+      "name": "example_controller",
+      "vendor_pn": "REPLACE_ME",
+      "mass_kg": 0.3,
+      "pos_mm": [600, 0, 90],
+      "envelope_mm": [80, 60, 25],
+      "source_note": "datasheet url"
+    }
+  ],
+
+  "harness": [
+    { "from": "example_battery_pack", "to": "example_controller", "kind": "power", "awg": 10 }
+  ],
+
+  "joints": [
+    { "a": "example_battery_pack", "to": "primary_structure", "kind": "bolted", "note": "M4 x4 into deck rail" }
+  ],
+
+  "access_openings": [
+    { "name": "service_hatch", "x_mm": [350, 650], "note": "items below must be retrievable through here" }
+  ]
+}

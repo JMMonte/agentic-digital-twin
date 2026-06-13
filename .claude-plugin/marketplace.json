@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
+  "name": "sim-hardware-as-code-marketplace",
+  "description": "Single-plugin marketplace for sim-hardware-as-code: the simulation-in-the-loop, hardware-as-code engineering methodology (design-of-record + scored audits + rerun viz + tradeoff studies + tiered FEA + manufacturability loop + living guardrails).",
+  "owner": {
+    "name": "Joao Montenegro",
+    "email": "joaommontenegro1@gmail.com"
+  },
+  "plugins": [
+    {
+      "name": "sim-hardware-as-code",
+      "source": "./",
+      "description": "Simulation-in-the-loop, hardware-as-code methodology: design-of-record JSON + scored audits + rerun viz + tradeoff studies + tiered FEA (analytic -> beam -> gmsh+CalculiX continuum) + manufacturability loop + living guardrails.",
+      "version": "0.2.0",
+      "author": {
+        "name": "Joao Montenegro"
+      },
+      "keywords": ["engineering", "simulation", "hardware", "audit", "tradeoff-study", "fea", "calculix", "gmsh"]
+    }
+  ]
+}
