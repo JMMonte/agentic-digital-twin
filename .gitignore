@@ -3,3 +3,5 @@ __pycache__/
 .DS_Store
 # downloaded source 3D models for the hero render (~1.6 GB, re-fetchable by hero.py)
 assets/models/
+.env
+.env.*
