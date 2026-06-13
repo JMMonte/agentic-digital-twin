@@ -60,7 +60,7 @@ GRID = "#30363d"
 ACCENT = "#58a6ff"
 MODEL_DIR = Path(__file__).resolve().parent / "models"
 COLUMN_LEFTS = (0, WIDTH // 3, (WIDTH * 2) // 3, WIDTH)
-MODEL_Y = 136
+MODEL_Y = 92
 LABEL_Y = 570
 CHART_PANEL_SIZE = (462, 148)
 
@@ -466,7 +466,7 @@ def render_aircraft() -> tuple[Image.Image, ModelAudit]:
         bar_title="Cp",
         size=(690, 505),
         camera_position=[(5.7, -5.9, 3.0), (0.05, 0.0, 0.05), (0, 0, 1)],
-        zoom=0.86,
+        zoom=1.08,
         bar_pos=(0.865, 0.22),
         bar_height=0.48,
     )
@@ -492,7 +492,7 @@ def render_spacecraft() -> tuple[Image.Image, ModelAudit]:
         bar_title="MPa",
         size=(620, 500),
         camera_position=[(5.3, -5.9, 3.45), (0, 0, 0.05), (0, 0, 1)],
-        zoom=0.98,
+        zoom=1.12,
         bar_pos=(0.895, 0.25),
         bar_height=0.44,
         show_edges=True,
@@ -519,7 +519,7 @@ def render_truck() -> tuple[Image.Image, ModelAudit]:
         bar_title="q",
         size=(620, 440),
         camera_position=[(5.0, -5.1, 2.8), (0.04, 0, 0.28), (0, 0, 1)],
-        zoom=0.90,
+        zoom=1.08,
         bar_pos=(0.045, 0.24),
         bar_height=0.44,
     )
@@ -620,9 +620,9 @@ def composite(rendered: Rendered) -> Image.Image:
     canvas = make_background()
     draw = ImageDraw.Draw(canvas, "RGBA")
 
-    aircraft_size = (500, 420)
-    spacecraft_size = (500, 420)
-    truck_size = (500, 356)
+    aircraft_size = (515, 480)
+    spacecraft_size = (515, 480)
+    truck_size = (515, 420)
     aircraft = resize_render(rendered.aircraft, aircraft_size)
     spacecraft = resize_render(rendered.spacecraft, spacecraft_size)
     truck = resize_render(rendered.truck, truck_size)
@@ -630,7 +630,7 @@ def composite(rendered: Rendered) -> Image.Image:
 
     paste_with_shadow(canvas, aircraft, centered_column_xy(0, aircraft_size))
     paste_with_shadow(canvas, spacecraft, centered_column_xy(1, spacecraft_size))
-    paste_with_shadow(canvas, truck, centered_column_xy(2, truck_size, y=158))
+    paste_with_shadow(canvas, truck, centered_column_xy(2, truck_size, y=118))
 
     chart_panel = Image.new("RGBA", CHART_PANEL_SIZE, (0, 0, 0, 0))
     panel_draw = ImageDraw.Draw(chart_panel, "RGBA")
