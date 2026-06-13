@@ -187,3 +187,10 @@ Built against the current Claude Code plugin spec:
 
 Methodology source: the `AGENTS.md` files of the `lander/`, `aircraft/`, and
 `seagull/` projects in this monorepo.
+
+## Credits
+
+Hero banner rendered with [PyVista](https://pyvista.org) (`assets/hero.py`) from real 3D models:
+
+- **Boeing 777** and **Mars Reconnaissance Orbiter** — NASA (public domain).
+- **Semi-trailer truck** — © [Artec 3D](https://www.artec3d.com/3d-models/semi-trailer-truck), licensed [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/).
