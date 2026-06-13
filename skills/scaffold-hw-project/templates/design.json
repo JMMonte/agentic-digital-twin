@@ -2,7 +2,7 @@
   "project": "REPLACE_ME",
   "version": "0.1",
   "date": "YYYY-MM-DD",
-  "status": "rev0: scaffolded from sim-hardware-as-code; geometry not yet filled in",
+  "status": "rev0: scaffolded from agentic-digital-twin; geometry not yet filled in",
 
   "_README": [
     "SINGLE SOURCE OF TRUTH. The build source (Design.cs / design_mirror.py)",
