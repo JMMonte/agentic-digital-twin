@@ -1,16 +1,18 @@
-# sim-hardware-as-code
+# Agentic Digital Twins, as Code
 
-A Claude Code plugin that packages the **simulation-in-the-loop,
-hardware-as-code** engineering methodology — the conventions and hard-won
+A Claude Code plugin for building **engineering digital twins as code with AI
+agents** — code-defined geometry + **digital twin simulation** (physics, CFD,
+FEA) + scored verification, with **rerun** for visualization and data fusion
+toward live, closed-loop twins. It packages the conventions and hard-won
 gotchas from a working modeling-and-simulation monorepo (lunar lander,
-aircraft, a real-aircraft digital twin) — so a new hardware/CAD/sim project
-starts at best-practice on day one, and so the lessons keep accruing as you
-learn.
+aircraft, a real-aircraft digital twin), so a new hardware / CAD / sim project
+starts at best-practice on day one and the lessons keep accruing as you learn.
+**Hardware-in-the-loop ready.**
 
 It is a **living artifact**: the guardrails checklist and project AGENTS.md
 are structured for new lessons, gotchas, and skills to append cleanly.
 
-## What "hardware as code" means here
+## What "digital twins as code" means here
 
 - **Spec/geometry is code.** One source-of-truth `design.json`, mirrored
   into the build source (e.g. `Design.cs`). Published/measured values tagged
@@ -39,7 +41,7 @@ are structured for new lessons, gotchas, and skills to append cleanly.
 ## What's in the plugin
 
 ```
-sim-hardware-as-code/
+agentic-digital-twin/
 ├── .claude-plugin/
 │   ├── plugin.json            # manifest (name, version, description, author, keywords)
 │   └── marketplace.json       # single-plugin marketplace catalog (for distribution)
@@ -82,11 +84,11 @@ sim-hardware-as-code/
 
 `hardware-as-code-engineer` — a subagent persona embodying the whole
 methodology and the guardrails, which distrusts any number not cross-checked
-against an anchor. Appears as `sim-hardware-as-code:hardware-as-code-engineer`.
+against an anchor. Appears as `agentic-digital-twin:hardware-as-code-engineer`.
 
 ## Install
 
-This plugin lives inside the repo at `plugins/sim-hardware-as-code/`. The
+This plugin is its own repo (`JMMonte/agentic-digital-twin`). Its
 `.claude-plugin/` directory holds BOTH a `plugin.json` (so the directory is
 a valid plugin) and a `marketplace.json` (so the same directory doubles as a
 single-plugin marketplace via `"source": "./"`).
@@ -94,35 +96,35 @@ single-plugin marketplace via `"source": "./"`).
 ### Option A — from GitHub (recommended)
 
 ```bash
-/plugin marketplace add JMMonte/sim-hardware-as-code
-/plugin install sim-hardware-as-code@sim-hardware-as-code-marketplace
+/plugin marketplace add JMMonte/agentic-digital-twin
+/plugin install agentic-digital-twin@agentic-digital-twin-marketplace
 ```
 
 ### Option B — from a local clone
 
 ```bash
-git clone https://github.com/JMMonte/sim-hardware-as-code
-/plugin marketplace add ./sim-hardware-as-code        # the dir doubles as the marketplace root
-/plugin install sim-hardware-as-code@sim-hardware-as-code-marketplace
+git clone https://github.com/JMMonte/agentic-digital-twin
+/plugin marketplace add ./agentic-digital-twin        # the dir doubles as the marketplace root
+/plugin install agentic-digital-twin@agentic-digital-twin-marketplace
 # or, for one session without installing:
-claude --plugin-dir ./sim-hardware-as-code
+claude --plugin-dir ./agentic-digital-twin
 ```
 
 Validate at any time:
 
 ```bash
-claude plugin validate ./sim-hardware-as-code --strict
+claude plugin validate ./agentic-digital-twin --strict
 ```
 
 ## Use
 
 ```
-/sim-hardware-as-code:scaffold-hw-project     # start a new project
-/sim-hardware-as-code:add-scored-audit        # add a requirement check
-/sim-hardware-as-code:run-tradeoff-study      # resolve a design fork
-/sim-hardware-as-code:continuum-fea           # tier-3 stress/buckling (gmsh + CalculiX)
-/sim-hardware-as-code:manufacturability-loop  # pack the internals
-/sim-hardware-as-code:guardrails-check        # sweep the gotchas / log a lesson
+/agentic-digital-twin:scaffold-hw-project     # start a new project
+/agentic-digital-twin:add-scored-audit        # add a requirement check
+/agentic-digital-twin:run-tradeoff-study      # resolve a design fork
+/agentic-digital-twin:continuum-fea           # tier-3 stress/buckling (gmsh + CalculiX)
+/agentic-digital-twin:manufacturability-loop  # pack the internals
+/agentic-digital-twin:guardrails-check        # sweep the gotchas / log a lesson
 ```
 
 Or just ask, and Claude invokes the right skill / the

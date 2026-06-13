@@ -1,27 +1,30 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
-  "name": "sim-hardware-as-code",
-  "displayName": "Simulation-in-the-Loop, Hardware-as-Code",
-  "version": "0.2.0",
-  "description": "Packages the simulation-in-the-loop, hardware-as-code engineering methodology: one source-of-truth design.json mirrored into the build, every requirement gets an executable scored audit (PASS/WARN/FAIL), uv PEP723 scripts, rerun visualization, the assembly verification ladder, scored tradeoff studies with sensitivity, a tiered FEA stack (analytic -> in-house beam FEA -> gmsh + CalculiX continuum) validated anchor-to-anchor, and the automation-agent manufacturability loop. Ships scaffolders, an audit/tradeoff/FEA/packaging skill set, a methodology subagent, and a living guardrails checklist.",
+  "name": "agentic-digital-twin",
+  "displayName": "Agentic Digital Twins, as Code",
+  "version": "0.3.0",
+  "description": "Build engineering digital twins as code with AI agents: one source-of-truth design.json mirrored into the build, every requirement gets an executable scored audit (PASS/WARN/FAIL), uv PEP723 scripts, rerun visualization (toward live data-fusion, closed-loop twins), the assembly verification ladder, scored tradeoff studies with sensitivity, a tiered FEA stack (analytic -> in-house beam FEA -> gmsh + CalculiX continuum) validated anchor-to-anchor, and the automation-agent manufacturability loop. Digital twin engineering and digital twin simulation, hardware-in-the-loop ready. Ships scaffolders, an audit/tradeoff/FEA/packaging skill set, a methodology subagent, and a living guardrails checklist.",
   "author": {
     "name": "Joao Montenegro",
     "email": "joaommontenegro1@gmail.com"
   },
   "keywords": [
-    "engineering",
+    "digital-twin",
+    "digital-twin-simulation",
+    "digital-twin-engineering",
+    "agentic-ai",
+    "ai-agents",
     "simulation",
-    "hardware",
-    "design-of-record",
-    "audit",
-    "rerun",
-    "picogk",
+    "engineering",
     "cad",
+    "hardware-in-the-loop",
+    "rerun",
     "tradeoff-study",
     "manufacturability",
     "fea",
     "calculix",
-    "gmsh"
+    "gmsh",
+    "picogk"
   ],
   "license": "MIT"
 }
