@@ -618,7 +618,6 @@ def centered_column_xy(column: int, size: tuple[int, int], y: int = MODEL_Y) -> 
 
 def composite(rendered: Rendered) -> Image.Image:
     canvas = make_background()
-    add_background_lines(canvas)
     draw = ImageDraw.Draw(canvas, "RGBA")
 
     aircraft_size = (500, 420)
@@ -645,7 +644,6 @@ def composite(rendered: Rendered) -> Image.Image:
     chart_panel.alpha_composite(charts, (16, 15))
     canvas.alpha_composite(chart_panel, (WIDTH - CHART_PANEL_SIZE[0] - 24, 610))
 
-    draw.line((92, 620, 854, 620), fill=hex_to_rgba(GRID, 34), width=1)
     draw_text_layer(canvas)
     return canvas
 
