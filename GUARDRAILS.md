@@ -193,6 +193,15 @@ meta-rule: a solve that "ran" is not one that is correct.
   source and `.inp`/`.frd` are stable Abaqus-compatible formats, so no
   lock-in. (Sourced FEA-solver sweep, 2026-06-13: `ccx` is the robust pick
   across weightings; Code_Aster / Elmer are escalation-only and macOS-painful.)
+- **Shell stress in the `.dat` is at the through-thickness GAUSS point, not the
+  surface.** CalculiX expands a shell (S8R) to a solid and prints `*EL PRINT,S`
+  at ±t/(2·√3); the surface fibre stress = IP stress × √3. Forget it and you
+  under-read bending by 1 − 1/√3 = 42% — a passed-but-wrong trap (raw 474 MPa
+  vs true 821 MPa on a hull-skin bay). And shell `.dat` stress rows TRAIL a
+  `_shell_<id>` label, so `[float(x) for x in line.split()]` throws and
+  silently drops EVERY stress row — parse the LEADING numeric tokens only.
+  (Both caught live, 2026-06-13, validating a hull panel against an analytic
+  von-Kármán-slam anchor.)
 
 ---
 
