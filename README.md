@@ -1,6 +1,25 @@
 # Agentic Digital Twins, as Code
 
-![Agentic digital twins, as code — CFD, FEA, and telemetry, all defined as code](assets/hero.png)
+[![License: MIT](https://img.shields.io/badge/License-MIT-3DA639.svg)](LICENSE)
+[![Release](https://img.shields.io/github/v/release/JMMonte/agentic-digital-twin?color=8957E5)](https://github.com/JMMonte/agentic-digital-twin/releases)
+[![Claude Code](https://img.shields.io/badge/Claude_Code-plugin-D97757?logo=anthropic&logoColor=white)](https://claude.com/claude-code)
+
+**Recommended stack** ·
+[![Python](https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=white)](https://www.python.org)
+[![uv](https://img.shields.io/badge/uv-DE5FE9?logo=uv&logoColor=white)](https://github.com/astral-sh/uv)
+[![NumPy](https://img.shields.io/badge/NumPy-013243?logo=numpy&logoColor=white)](https://numpy.org)
+[![SciPy](https://img.shields.io/badge/SciPy-8CAAE6?logo=scipy&logoColor=white)](https://scipy.org)
+[![trimesh](https://img.shields.io/badge/trimesh-2C3E50)](https://github.com/mikedh/trimesh)
+[![build123d](https://img.shields.io/badge/build123d-4B8BBE)](https://github.com/gumyr/build123d)
+[![FreeCAD](https://img.shields.io/badge/FreeCAD-CB333B?logo=freecad&logoColor=white)](https://www.freecad.org)
+[![PicoGK](https://img.shields.io/badge/PicoGK_·_LEAP_71-1F6FEB)](https://github.com/leap71/PicoGK)
+[![gmsh](https://img.shields.io/badge/gmsh-7B1FA2)](https://gmsh.info)
+[![CalculiX](https://img.shields.io/badge/CalculiX-455A64)](https://www.calculix.de)
+[![OpenFOAM](https://img.shields.io/badge/OpenFOAM-1565C0)](https://www.openfoam.com)
+[![SU2](https://img.shields.io/badge/SU2-0277BD)](https://su2code.github.io)
+[![Rerun](https://img.shields.io/badge/Rerun-FC4A6B)](https://rerun.io)
+
+![Agentic digital twins, as code — 3D CFD, FEA, and telemetry, all defined as code](assets/hero.png)
 
 A Claude Code plugin for building **engineering digital twins as code with AI
 agents** — code-defined geometry + **digital twin simulation** (physics, CFD,
@@ -87,34 +106,6 @@ agentic-digital-twin/
 `hardware-as-code-engineer` — a subagent persona embodying the whole
 methodology and the guardrails, which distrusts any number not cross-checked
 against an anchor. Appears as `agentic-digital-twin:hardware-as-code-engineer`.
-
-## Built with
-
-The methodology recommends this open, code-first stack (all free / open-source):
-
-**Harness & language**
-[![Claude Code](https://img.shields.io/badge/Claude_Code-D97757?logo=anthropic&logoColor=white)](https://claude.com/claude-code)
-[![Python](https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=white)](https://www.python.org)
-[![uv](https://img.shields.io/badge/uv-DE5FE9?logo=uv&logoColor=white)](https://github.com/astral-sh/uv)
-[![NumPy](https://img.shields.io/badge/NumPy-013243?logo=numpy&logoColor=white)](https://numpy.org)
-[![SciPy](https://img.shields.io/badge/SciPy-8CAAE6?logo=scipy&logoColor=white)](https://scipy.org)
-[![trimesh](https://img.shields.io/badge/trimesh-2C3E50)](https://github.com/mikedh/trimesh)
-
-**CAD / geometry**
-[![build123d](https://img.shields.io/badge/build123d-4B8BBE)](https://github.com/gumyr/build123d)
-[![FreeCAD](https://img.shields.io/badge/FreeCAD-CB333B?logo=freecad&logoColor=white)](https://www.freecad.org)
-[![PicoGK](https://img.shields.io/badge/PicoGK_·_LEAP_71-1F6FEB)](https://github.com/leap71/PicoGK)
-
-**Simulation (CFD / FEA)**
-[![gmsh](https://img.shields.io/badge/gmsh-7B1FA2)](https://gmsh.info)
-[![CalculiX](https://img.shields.io/badge/CalculiX-455A64)](https://www.calculix.de)
-[![OpenFOAM](https://img.shields.io/badge/OpenFOAM-1565C0)](https://www.openfoam.com)
-[![SU2](https://img.shields.io/badge/SU2-0277BD)](https://su2code.github.io)
-
-**Visualization & data fusion**
-[![Rerun](https://img.shields.io/badge/Rerun-FC4A6B)](https://rerun.io)
-
-> Brand logos shown where the project publishes one (via [Simple Icons](https://simpleicons.org)); the scientific-computing tools without a published logo use named badges. CalculiX (`ccx`) ships bundled with FreeCAD.
 
 ## Install
 
