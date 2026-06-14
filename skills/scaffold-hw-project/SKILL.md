@@ -26,6 +26,7 @@ the geometry; the harness and the conventions are already correct.
 ├── GUARDRAILS.md          # the living gotcha checklist (project-local copy)
 ├── design/
 │   ├── design.json        # SINGLE SOURCE OF TRUTH (anchors [PUB] + derived)
+│   ├── materials.json     # cited material-property source of truth (NEVER hallucinate)
 │   └── Design.cs          # build-source MIRROR stub (or Design.py — match the kernel)
 ├── audit.py               # scored audit harness (PASS/WARN/FAIL, exit 1 on FAIL)
 ├── viz.py                 # rerun visualization harness
@@ -58,6 +59,7 @@ the geometry; the harness and the conventions are already correct.
    TPL="${CLAUDE_PLUGIN_ROOT}/skills/scaffold-hw-project/templates"
    mkdir -p "$PROJ/design" "$PROJ/mfg" "$PROJ/out/history"
    cp "$TPL/design.json"          "$PROJ/design/design.json"
+   cp "$TPL/materials.json"       "$PROJ/design/materials.json"   # cited material props; never hallucinate
    cp "$TPL/Design.cs"            "$PROJ/design/Design.cs"     # rename if Python kernel
    cp "$TPL/audit.py"             "$PROJ/audit.py"
    cp "$TPL/viz.py"               "$PROJ/viz.py"

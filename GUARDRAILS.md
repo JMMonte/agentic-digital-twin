@@ -205,7 +205,42 @@ meta-rule: a solve that "ran" is not one that is correct.
 
 ---
 
-## 8. Project lessons (append project-specific entries below)
+## 8. Material properties — cited source of truth, NEVER hallucinate
+
+A model will confidently invent E, ν, ρ, σ_y, σ_u — and a "CFRP" or "steel"
+guess can be off by multiples, silently poisoning every FEA and mass/CG audit
+downstream. There is NO free, comprehensive, machine-readable database of
+engineering design *allowables*: the authoritative ones (MMPDS for metals,
+CMH-17 for composites, ASM, Ansys Granta) are paid; the open ones (Materials
+Project, PAULING FILE) are *computed crystallographic/DFT* data, not yield
+strengths of 6061-T6. So apply the same discipline as geometry:
+
+- **`materials.json` is the source of truth** (same idea as design.json). Every
+  property carries a `source` citation and a `verified` flag. Audits (`fea*`,
+  mass/CG) read material props ONLY from this file — never inline a number.
+- **NEVER hallucinate a value.** To add/edit a material you MUST cite a primary
+  source: MMPDS / CMH-17 / ASM handbook / a manufacturer datasheet (alloy +
+  temper, or prepreg). No citation → it does not go in the file. If you only
+  have a "typical" value, mark `verified: false` and flag it for the user to
+  confirm before it's trusted in a design audit.
+- **Composites are the trap.** "CFRP"/"carbon fiber" is meaningless as a
+  property — stiffness/strength swing with fiber, resin, FIBER-VOLUME-FRACTION,
+  layup and direction. Cite the specific prepreg (e.g. "Toray T700/2510 UD,
+  Vf 0.57") and the laminate orientation; never a generic composite.
+- **Anisotropy & direction.** Composites and rolled/AM metals are directional —
+  record the orientation the property applies to; do not use a longitudinal
+  allowable for a transverse load.
+- **Allowables, not typicals, for design.** Use A-/B-basis (statistical)
+  allowables for safety-critical margins, not handbook "typical" averages.
+- **FLUIDS (for CFD) have a real programmatic source of truth: CoolProp**
+  (open, authoritative thermophysical properties of air/water/etc.). Pull
+  density/viscosity from CoolProp at the actual T/P; don't hardcode "1.225".
+- **guardrails-check** should flag any material property used by an audit that
+  is missing from materials.json or has `verified: false`.
+
+---
+
+## 9. Project lessons (append project-specific entries below)
 
 > When this file is copied into a new project, rename this section to the
 > project name and log its own hard-won lessons here. Keep the sections

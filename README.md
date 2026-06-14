@@ -38,6 +38,11 @@ are structured for new lessons, gotchas, and skills to append cleanly.
 - **Spec/geometry is code.** One source-of-truth `design.json`, mirrored
   into the build source (e.g. `Design.cs`). Published/measured values tagged
   `[PUB]`; everything else derived and traceable.
+- **Materials are cited, never hallucinated.** A `materials.json` source of
+  truth holds every property with a citation (MMPDS / CMH-17 / ASM / datasheet);
+  audits read from it — there's no free allowables API, so the discipline is the
+  defense. Composites cite the specific prepreg + fiber-volume-fraction + layup;
+  fluids come from CoolProp. (`add-material` skill, GUARDRAILS §8.)
 - **Every requirement gets an executable, scored audit.** PASS/WARN/FAIL,
   exit 1 on FAIL, a markdown report. Audits read the build's exported JSON
   artifacts — they never duplicate a geometry constant.

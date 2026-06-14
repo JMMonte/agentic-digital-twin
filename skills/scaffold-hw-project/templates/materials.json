@@ -1,0 +1,84 @@
+{
+  "_README": [
+    "SOURCE OF TRUTH for material properties — same discipline as design.json.",
+    "NEVER hallucinate a value. Every material's properties carry a `source`",
+    "citation and a `verified` flag. Audits (fea*, mass/CG) read material",
+    "properties ONLY from this file; never inline a number in a script.",
+    "",
+    "To ADD/EDIT a material you MUST cite a primary source: MMPDS (metals),",
+    "CMH-17 (composites), an ASM handbook, or a manufacturer datasheet (alloy +",
+    "temper, or specific prepreg). No citation -> it does not go in this file.",
+    "Mark `verified: true` only once a human has confirmed it against the cited",
+    "source; otherwise `verified: false` and the guardrails-check flags it.",
+    "",
+    "COMPOSITES: 'CFRP'/'carbon fiber' is NOT a material — properties depend on",
+    "fiber, resin, fiber-volume-fraction (Vf), layup and direction. Cite the",
+    "specific prepreg + Vf + orientation. Record anisotropy. Use A-/B-basis",
+    "ALLOWABLES (not 'typical' averages) for safety-critical margins.",
+    "",
+    "FLUIDS (for CFD): do NOT hardcode densities/viscosities here. Pull them",
+    "from CoolProp (open, authoritative) at the actual temperature/pressure.",
+    "Units: SI (kg/m^3, GPa, MPa, dimensionless)."
+  ],
+
+  "materials": {
+    "Al-6061-T6": {
+      "class": "metal / aluminium alloy",
+      "density_kg_m3": 2700,
+      "youngs_modulus_GPa": 68.9,
+      "poisson_ratio": 0.33,
+      "yield_strength_MPa": 276,
+      "ultimate_strength_MPa": 310,
+      "isotropic": true,
+      "source": "MMPDS-17 / ASM typical for 6061-T6",
+      "verified": false,
+      "note": "Typical values — VERIFY against MMPDS or the supplier datasheet (and use A/B-basis allowables) before any design-critical audit."
+    },
+
+    "Ti-6Al-4V-annealed": {
+      "class": "metal / titanium alloy",
+      "density_kg_m3": 4430,
+      "youngs_modulus_GPa": 113.8,
+      "poisson_ratio": 0.342,
+      "yield_strength_MPa": 880,
+      "ultimate_strength_MPa": 950,
+      "isotropic": true,
+      "source": "MMPDS-17 / ASM typical for Ti-6Al-4V (annealed)",
+      "verified": false,
+      "note": "Typical values — VERIFY before design use; properties shift with heat treatment (STA vs annealed)."
+    },
+
+    "SS-304-annealed": {
+      "class": "metal / austenitic stainless steel",
+      "density_kg_m3": 8000,
+      "youngs_modulus_GPa": 193,
+      "poisson_ratio": 0.29,
+      "yield_strength_MPa": 215,
+      "ultimate_strength_MPa": 505,
+      "isotropic": true,
+      "source": "ASM typical for 304 (annealed)",
+      "verified": false,
+      "note": "Typical values — VERIFY; cold work raises yield substantially."
+    },
+
+    "CFRP-REPLACE-WITH-YOUR-PREPREG": {
+      "class": "composite / CFRP laminate",
+      "_instructions": "DELETE this placeholder. Add ONE entry per real prepreg+layup, e.g. 'T700-2510-UD-Vf57-quasi-iso'. Generic 'CFRP' is FORBIDDEN.",
+      "prepreg": null,
+      "fiber_volume_fraction": null,
+      "layup": null,
+      "density_kg_m3": null,
+      "E1_GPa": null,
+      "E2_GPa": null,
+      "G12_GPa": null,
+      "nu12": null,
+      "tensile_strength_1_MPa": null,
+      "tensile_strength_2_MPa": null,
+      "isotropic": false,
+      "source": "REQUIRED: cite the prepreg datasheet + CMH-17 lamina/laminate basis, with Vf and layup. No citation, no entry.",
+      "verified": false
+    }
+  },
+
+  "fluids_note": "Air/water and other fluid properties for CFD come from CoolProp (e.g. CoolProp.CoolProp.PropsSI('D','T',288.15,'P',101325,'Air')), evaluated at the real T/P — never hardcoded."
+}
