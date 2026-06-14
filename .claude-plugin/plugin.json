@@ -2,8 +2,8 @@
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "agentic-digital-twin",
   "displayName": "Agentic Digital Twins, as Code",
-  "version": "0.4.0",
-  "description": "Build engineering digital twins as code with AI agents: one source-of-truth design.json mirrored into the build, a cited material-property source of truth (materials.json — never hallucinated allowables), every requirement gets an executable scored audit (PASS/WARN/FAIL), uv PEP723 scripts, rerun visualization (toward live data-fusion, closed-loop twins), the assembly verification ladder, scored tradeoff studies with sensitivity, a tiered FEA stack (analytic -> in-house beam FEA -> gmsh + CalculiX continuum) validated anchor-to-anchor, and the automation-agent manufacturability loop. Digital twin engineering and digital twin simulation, hardware-in-the-loop ready. Ships scaffolders, an audit/material/tradeoff/FEA/packaging skill set, a methodology subagent, and a living guardrails checklist.",
+  "version": "0.5.0",
+  "description": "Build engineering digital twins as code with AI agents: one source-of-truth design.json mirrored into the build, a cited material-property source of truth (materials.json — never hallucinated allowables), every requirement gets an executable scored audit (PASS/WARN/FAIL), uv PEP723 scripts, rerun visualization (toward live data-fusion, closed-loop twins), the assembly verification ladder, scored tradeoff studies with sensitivity, a tiered FEA stack (analytic -> in-house beam FEA -> gmsh + CalculiX continuum) validated anchor-to-anchor, and the automation-agent manufacturability loop. Digital twin engineering and digital twin simulation, hardware-in-the-loop ready. Two entry points: author geometry as code, or bring an existing CAD file (STEP/STL import). Ships scaffolders, an import/audit/material/tradeoff/FEA/packaging skill set, a methodology subagent, and a living guardrails checklist.",
   "author": {
     "name": "Joao Montenegro",
     "email": "joaommontenegro1@gmail.com"

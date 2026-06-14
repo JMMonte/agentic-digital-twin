@@ -32,6 +32,7 @@ the geometry; the harness and the conventions are already correct.
 ├── viz.py                 # rerun visualization harness
 ├── tradeoff.py            # placement-level scored tradeoff study + sensitivity
 ├── fea_continuum.py       # tier-3 continuum FEA (gmsh + CalculiX), validated vs the analytic tier
+├── import_cad.py          # bring-your-own-CAD: import STEP/STL -> out/imported.json for the audits
 ├── mfg/
 │   ├── judgment.json      # AGENT layer: decomposition, COTS placements, harness
 │   └── packaging_solve.py # AUTOMATION layer: scores the judgment, exit 1 on FAIL
@@ -65,6 +66,7 @@ the geometry; the harness and the conventions are already correct.
    cp "$TPL/viz.py"               "$PROJ/viz.py"
    cp "$TPL/tradeoff.py"          "$PROJ/tradeoff.py"
    cp "$TPL/fea_continuum.py"     "$PROJ/fea_continuum.py"   # tier-3 gmsh+CalculiX, runs once ccx is installed
+   cp "$TPL/import_cad.py"        "$PROJ/import_cad.py"      # bring-your-own-CAD entry point (STEP/STL -> artifacts)
    cp "$TPL/judgment.json"        "$PROJ/mfg/judgment.json"
    cp "$TPL/packaging_solve.py"   "$PROJ/mfg/packaging_solve.py"
    cp "$TPL/AGENTS.md"            "$PROJ/AGENTS.md"

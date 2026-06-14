@@ -11,7 +11,7 @@
       "name": "agentic-digital-twin",
       "source": "./",
       "description": "Build engineering digital twins as code with AI agents: design-of-record JSON + cited material source-of-truth (no hallucinated allowables) + scored audits + rerun viz + tradeoff studies + tiered FEA (analytic -> beam -> gmsh+CalculiX continuum) + manufacturability loop + living guardrails. Digital twin engineering & simulation, hardware-in-the-loop ready.",
-      "version": "0.4.0",
+      "version": "0.5.0",
       "author": {
         "name": "Joao Montenegro"
       },

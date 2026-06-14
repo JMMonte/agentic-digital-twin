@@ -63,6 +63,9 @@ are structured for new lessons, gotchas, and skills to append cleanly.
 - **Guardrails are gold.** Silent-failure traps (a wrong boolean still
   passes watertight; `np.interp` needs ascending `xp`; voxel kernels fail
   silently; CFD `FLUID_MODEL` defaults) live in an append-only checklist.
+- **Two doors in.** Author geometry *as code* (`design.json` → build), **or
+  bring an existing CAD file** (`import-cad`: STEP/STL → the same audits, FEA,
+  CFD, and viz). Either way the scored-audit + cited-materials discipline applies.
 
 ## What's in the plugin
 

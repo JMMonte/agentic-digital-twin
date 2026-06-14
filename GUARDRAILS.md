@@ -240,7 +240,28 @@ strengths of 6061-T6. So apply the same discipline as geometry:
 
 ---
 
-## 9. Project lessons (append project-specific entries below)
+## 9. Importing existing CAD (bring-your-own-CAD)
+
+The default workflow is geometry-as-code, but users often arrive WITH a CAD file
+and want it verified/simulated. The `import-cad` skill + `import_cad.py` handle
+that — load STEP/STL → `out/imported.json` (+ mesh) the audits read. Traps:
+
+- **UNITS are the #1 silent killer.** STL is unitless; STEP units are frequently
+  wrong. Always pass `--units` and SANITY-CHECK the printed bbox against the real
+  part — a 25.4x (in→mm) or 1000x (m→mm) error silently corrupts every number.
+- **Mass needs a cited density** (materials.json) — never invent one; leave mass
+  null and flag it if no material is assigned.
+- **Watertightness gates volume + FEA.** A non-watertight mesh has no reliable
+  volume; repair it or use the STEP/BREP (which carries an exact volume).
+- **STEP = exact BREP** (real volume, re-meshable) needs build123d/OCCT;
+  **STL/mesh = tessellated approximation**. Native formats (.sldprt, Fusion,
+  CATIA) are unreadable — export to STEP/STL first.
+- When importing, `design.json` becomes the requirements/targets ledger (it no
+  longer GENERATES geometry) — but the scored-audit discipline still applies.
+
+---
+
+## 10. Project lessons (append project-specific entries below)
 
 > When this file is copied into a new project, rename this section to the
 > project name and log its own hard-won lessons here. Keep the sections
